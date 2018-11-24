@@ -1,15 +1,15 @@
-﻿// Lab_9 - перегрузка операторов
+﻿// Lab_9 - перегрузка операторов 
 
-#include "pch.h"
-#include <iostream>
-#include <fstream>
+#include "pch.h" 
+#include <iostream> 
+#include <fstream> 
 
 class matrixdyn
 {
 protected:
 	double *matr;
 	int rows;
-	int	colums;
+	int colums;
 	bool boo;
 public:
 	virtual void create();
@@ -28,7 +28,7 @@ public:
 	{
 		return matr[r*colums + c];
 	}
-	void olelem(int oro, int oco, double oel) 
+	void olelem(int oro, int oco, double oel)
 	{
 		matr[oro*colums + oco] = oel;
 	}
@@ -38,8 +38,11 @@ public:
 		colums = oco;
 		matr = new double[rows*colums];
 	}
-	friend std::ostream& operator<<(std::ostream& os, const matrixdyn& d);
+	friend std::ostream& operator << (std::ostream& os, const matrixdyn& d);
 	void del();
+	friend matrixdyn operator + (matrixdyn A, matrixdyn B);
+	friend matrixdyn operator - (matrixdyn A, matrixdyn B);
+	friend matrixdyn operator * (matrixdyn A, matrixdyn B);
 };
 
 class vectordyn : public matrixdyn
@@ -47,11 +50,15 @@ class vectordyn : public matrixdyn
 public:
 	void virtual input();
 	void virtual create();
+
+	friend std::ostream& operator << (std::ostream& os, const matrixdyn& d);
+	friend double operator * (vectordyn C, vectordyn D);
+	friend vectordyn operator * (vectordyn C, int k);
 };
 
 int main()
 {
-	setlocale(0, "");
+	setlocale(0, ""); 
 
 	matrixdyn A, B;
 	A.create();
@@ -66,9 +73,9 @@ int main()
 
 	A.transp();
 
-	std::cout << "A + B" << A + B << std::endl;
-	std::cout << "A - B" << A - B << std::endl;
-	std::cout << "A * B" << A * B << std::endl;
+	std::cout << "A + B \n" << A + B << std::endl;
+	std::cout << "A - B \n" << A - B << std::endl;
+	std::cout << "A * B \n" << A * B << std::endl;
 
 	A.del();
 	B.del();
@@ -85,24 +92,24 @@ int main()
 	std::cout << "Вектор D \n";
 	D.print();
 
-	std::cout << "C * 7" << C * 7 << std::endl;
-	std::cout << "C + D" << C + D << std::endl;
-	std::cout << "C * D" << C * D << std::endl;
+	std::cout << "C * 7 \n" << C * 7 << std::endl;
+	std::cout << "C + D \n" << C + D << std::endl;
+	std::cout << "C * D \n" << C * D << std::endl;
 
 	C.del();
 	D.del();
 
-	getchar();
+	getchar(); 
 	return 0;
 }
 
-matrixdyn operator + (matrixdyn A, matrixdyn B) 
+matrixdyn operator + (matrixdyn A, matrixdyn B)
 {
 	matrixdyn res;
 	res.odim(A.getrows(), A.getcolums());
 	if (A.getrows() != B.getrows() || A.getcolums() != B.getcolums())
 	{
-		std::cout << "Error!" << std::endl;
+		std::cout << "Error!\t";
 		return A;
 	}
 	for (int i = 0; i < B.getrows(); i++)
@@ -117,7 +124,7 @@ matrixdyn operator - (matrixdyn A, matrixdyn B)
 	res.odim(A.getrows(), A.getcolums());
 	if (A.getrows() != B.getrows() || A.getcolums() != B.getcolums())
 	{
-		std::cout << "Error!" << std::endl;
+		std::cout << "Error!\t";
 		return A;
 	}
 	for (int i = 0; i < B.getrows(); i++)
@@ -131,15 +138,15 @@ matrixdyn operator * (matrixdyn A, matrixdyn B)
 	matrixdyn res;
 	if (A.getcolums() != B.getrows())
 	{
-		std::cout << "Error!" << std::endl;
+		std::cout << "Error!\t";
 		return A;
 	}
 	res.odim(A.getrows(), B.getcolums());
 	int rows = A.getrows();
 	int temp = A.getcolums();
 	int colums = B.getcolums();
-	for (int j = 0; j < colums; j++) 
-		for (int i = 0; i < rows; i++) 
+	for (int j = 0; j < colums; j++)
+		for (int i = 0; i < rows; i++)
 		{
 			double x = 0;
 			for (int t = 0; t < temp; t++)
@@ -149,7 +156,7 @@ matrixdyn operator * (matrixdyn A, matrixdyn B)
 	return res;
 }
 
-std::ostream & operator<<(std::ostream & os, const matrixdyn & d)
+std::ostream & operator << (std::ostream & os, const matrixdyn & d)
 {
 	for (int i = 0; i < d.getrows(); i++) {
 		for (int j = 0; j < d.getcolums(); j++)
@@ -179,7 +186,9 @@ void matrixdyn::input()
 		for (int j = 0; j < colums; j++)
 		{
 			std::cout << "Матрица[" << i + 1 << "][" << j + 1 << "]";
-			std::cin >> matr[i*colums + j];
+			std::cin >>
+
+				matr[i*colums + j];
 		}
 	std::cout << "\n";
 	boo = true;
@@ -267,14 +276,14 @@ void vectordyn::create()
 	matr = new double[rows*colums];
 }
 
-vectordyn operator * (vectordyn C, int k) 
+vectordyn operator * (vectordyn C, int k)
 {
 	vectordyn result;
 	int u = C.getrows();
 	int uu = C.getcolums();
 	result.odim(u, uu);
 	for (int i = 0; i < u; i++)
-		for (int j = 0; j < uu; j++) 
+		for (int j = 0; j < uu; j++)
 		{
 			double a = C.getelem(i, j);
 			result.olelem(i, j, k*a);
@@ -282,7 +291,7 @@ vectordyn operator * (vectordyn C, int k)
 	return result;
 }
 
-vectordyn operator * (vectordyn C, vectordyn D)
+double operator * (vectordyn C, vectordyn D)
 {
 	matrixdyn K = C;
 	matrixdyn M = D;
