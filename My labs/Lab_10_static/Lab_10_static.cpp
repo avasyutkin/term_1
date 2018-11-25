@@ -1,4 +1,4 @@
-﻿
+﻿//Lab_10 - привязка бибилиотеки
 #include "static.h"
 #include <iostream>
 

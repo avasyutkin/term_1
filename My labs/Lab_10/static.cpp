@@ -1,3 +1,4 @@
+//Lab_10 - функции для бибилиотеки
 #include "static.h"
 
 matrixdyn operator + (matrixdyn A, matrixdyn B)

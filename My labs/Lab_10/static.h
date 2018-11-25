@@ -1,4 +1,4 @@
-#pragma once
+//Lab_10 - библиотека
 
 #include <iostream> 
 #include <fstream> 
