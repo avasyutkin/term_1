@@ -1,3 +1,4 @@
+//OpenCV
 #include <stdio.h>
 #include <iostream>
 #include <vector>
@@ -55,13 +56,3 @@ int main()
 	cv::waitKey();
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-//http://san-tit.blogspot.com/2016/03/opencv-310-visual-studio-2015.html
