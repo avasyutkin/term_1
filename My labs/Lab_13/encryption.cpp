@@ -32,9 +32,13 @@ int main()
 
 	// как правило, в литературе, структуры используются для хранения только данных
 	// ни слова о методах и конструкторах/деструкторах
-	
+
+	char inputtext[256];
+
+	int cryptedtext_len;
+	int len;
 	unsigned char *plaintext =
-		(unsigned char *)"EVP_EncryptUpdate() encrypts inl bytes from the buffer in and writes the encrypted version to out";// исходный текст
+		(unsigned char *) "EVP_EncryptUpdate() encrypts inl bytes from the buffer in and writes the encrypted version to out"; // исходный текст
 	int plaintext_len = strlen((char *)plaintext); // длина текста
 	unsigned char *key = (unsigned char *)"0123456789"; // пароль (ключ)
 	unsigned char *iv = (unsigned char *)"0123456789012345"; // инициализирующий вектор, рандомайзер
@@ -55,27 +59,38 @@ int main()
 		key, // ключ/пароль/секрет
 		iv); // рандомайзер (случайный начальный вектор)
 	
-	// 4. САМ ПРОЦЕСС ШИФРОВАНИЯ - ФУКНЦИЯ EVP_EncryptUpdate
-	int len;
-	EVP_EncryptUpdate(ctx, // объект с настройками
-		cryptedtext, // входной параметр: ссылка, куда помещать зашифрованные данные
-		&len, // выходной параметр: длина полученного шифра
-		plaintext, // входной параметр: что шифровать
-		plaintext_len); // входной параметр : длина входных данных
-	int cryptedtext_len = len;
+	std::ifstream inputfile("inputtext.txt");
+	while (!inputfile.eof())
+	{
+		//inputfile.open(inputtext, 256, ios::in);
+		inputfile.get(inputtext, 256);
+		inputtext >> plaintext;
+		
 
-	// 5. Финализация процесса шифрования
-	// необходима, если последний блок заполнен данными не полностью
-	EVP_EncryptFinal_ex(ctx, cryptedtext + len, &len);
-	cryptedtext_len += len;
 
+		// 4. САМ ПРОЦЕСС ШИФРОВАНИЯ - ФУКНЦИЯ EVP_EncryptUpdate
+		EVP_EncryptUpdate(ctx, // объект с настройками
+			cryptedtext, // входной параметр: ссылка, куда помещать зашифрованные данные
+			&len, // выходной параметр: длина полученного шифра
+			plaintext, // входной параметр: что шифровать
+			plaintext_len); // входной параметр : длина входных данных
+			cryptedtext_len = len;
+
+		// 5. Финализация процесса шифрования
+		// необходима, если последний блок заполнен данными не полностью
+		EVP_EncryptFinal_ex(ctx, cryptedtext + len, &len);
+		cryptedtext_len += len;
+	}
 	// 6. Удаление структуры
 	EVP_CIPHER_CTX_free(ctx);
 
 	// вывод зашифрованных данных
+
 	for (int i = 0; i < cryptedtext_len; i++)
+	//while ()
 	{
-		cout << hex << cryptedtext[i];
+		std::ofstream fout("crypt.txt");
+		fout << hex << cryptedtext[i];
 		if ((i + 1) % 32 == 0) cout << endl;
 	}
 	cout << endl;

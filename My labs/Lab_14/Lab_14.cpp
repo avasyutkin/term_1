@@ -110,58 +110,6 @@ int main()
 	*/
 
 	//РЕШЕНИЕ 2
-	std::queue<std::string> Class_9;
-	std::queue<std::string> Class_10;
-	std::queue<std::string> Class_11;
-
-	int input_class;
-	std::cin >> input_class;
-
-	while (input_class != 0)
-	{
-
-		if (input_class == 9)
-		{
-			std::string student;
-			std::cin >> student;
-			Class_9.push(student);
-		}
-
-		if (input_class == 10)
-		{
-			std::string student;
-			std::cin >> student;
-			Class_10.push(student);
-		}
-
-		if (input_class == 11)
-		{
-			std::string student;
-			std::cin >> student;
-			Class_11.push(student);
-		}
-
-		std::cin >> input_class;
-
-	}
-
-	while (!Class_9.empty())
-	{
-		std::cout << Class_9.front() << std::endl;
-		Class_9.pop();
-	}
-
-	while (!Class_10.empty())
-	{
-		std::cout << Class_10.front() << std::endl;
-		Class_10.pop();
-	}
-
-	while (!Class_11.empty())
-	{
-		std::cout << Class_11.front() << std::endl;
-		Class_11.pop();
-	}
 
 	/*
 	ДЕК(англ.deque – аббревиатура от double - ended queue, двухсторонняя очередь)
@@ -239,33 +187,7 @@ int main()
 
 
 int main()
-{	//1
-	std::stack<std::string> st;
-	std::stack<std::string> st1;
-	std::stack<std::string> st2;
-
-	char stroka;
-	std::cin >> stroka;
-	while (stroka != 0)
-	{
-		if (stroka == '[' || stroka == '(' || stroka == '{' || stroka == ']' || stroka == ')' || stroka == '}')
-		{
-			if (stroka == '[')
-			{
-				st.push =()
-			}
-			if (stroka == '(')
-			{
-
-			}
-			if (stroka == '{')
-			{
-
-			}
-		}
-	}
-
-
+{
 	//2
 	std::queue<std::string> Class_9;
 	std::queue<std::string> Class_10;
@@ -322,3 +244,105 @@ int main()
 
 }
 */
+
+//1
+/*#include"pch.h"
+#include<iostream>
+#include<stack>
+#include<string>
+
+bool ArePair(char opening, char closing)
+{
+	if (opening == '(' && closing == ')') return true;
+	else if (opening == '{' && closing == '}') return true;
+	else if (opening == '[' && closing == ']') return true;
+	return false;
+}
+bool AreParanthesesBalanced(std::string exp)
+{
+	std::stack<char>  S;
+	for (int i = 0; i < exp.length(); i++)
+	{
+		if (exp[i] == '(' || exp[i] == '{' || exp[i] == '[')
+			S.push(exp[i]);
+		else if (exp[i] == ')' || exp[i] == '}' || exp[i] == ']')
+		{
+			if (S.empty() || !ArePair(S.top(), exp[i]))
+				return false;
+			else
+				S.pop();
+		}
+	}
+	return S.empty() ? true : false;
+}
+
+int main()
+{
+	/*Code to test the function AreParanthesesBalanced/*
+	std::string expression;
+	std::cout << "Enter an expression:  "; // input expression from STDIN/Console
+	std::cin >> expression;
+	if (AreParanthesesBalanced(expression))
+		std::cout << "Balanced\n";
+	else
+		std::cout << "Not Balanced\n";
+}*/
+
+
+//3
+/*#include "pch.h"
+#include <iostream>
+#include <string>
+#include <stack>
+#include <queue>
+#include <deque>
+#include <cstring>
+
+int strLeght(std::string input) //считаем количество символов в строке
+{
+	int counter = 0;
+	while (input[counter] != '\0')
+		counter++;
+	return counter;
+}
+int main()
+{
+	std::deque<std::string>p1;
+
+	std::string input;
+	std::cin >> input;
+
+	p1.push_back(input);
+	if (strLeght(input) % 2 == 0)
+	{
+		for (int i = 0; i < (strLeght(input) / 2); i++)
+		{
+			if (p1.front() == p1.back())
+			{
+				p1.pop_front();
+				if (!p1.empty())
+					p1.pop_back();
+			}
+			else
+				std::cout << "Слово не является палиндромом" << std::endl;
+		}
+		if (p1.empty())
+			std::cout << "введенное слово - палиндром" << std::endl;
+	}
+	else 
+	{
+		for (int i = 0; i < (strLeght(input) / 2 + strLeght(input) % 2); i++)
+		{
+			if (p1.front() == p1.back())
+			{
+				p1.pop_front();
+				if (!p1.empty())
+					p1.pop_back();
+			}
+			else
+				std::cout << "Слово не является палиндромом" << std::endl;
+		}
+		if (p1.empty())
+			std::cout << "введенное слово - палиндром" << std::endl;
+	}
+}*/
