@@ -1,5 +1,4 @@
-﻿
-#include "pch.h"
+﻿#include "pch.h"
 #include<iostream>
 #include "String.h" 
 #include <string> 
@@ -97,60 +96,10 @@ int main()
 
 		A.str = A.Add((char*)"ABCDEFGASDFGHJKLZASDFGHJ");
 
-		A.str = A.insert(15, "ABCD");
+		A.str = A.insert(15, (char*)"ABCD");
 		A.clear();
 	}
 	system("pause");
 	return 0;
 }
 
-
-
-
-/*class stroks
-{
-	stroks()
-	{
-		char stro;
-		char *stro = new char[0];
-	}
-	stroks()
-	{
-		char *stro = new char[ur];
-		for (int i = 0; i < ur; i++)
-		{
-			stro[i] = stradd[i];
-		}
-	}
-
-public:
-	char *stradd;
-	int ur;
-	void add();
-	void clear();
-	void insert();
-	void cut();
-
-};
-
-int main()
-{
-
-}
-
-void stroks::add()
-{
-	std::cout << "Введите строку" << std::endl;
-	std::cin >> stradd;
-	while (stradd != 0)
-	{
-		ur = ur + 1;
-	}
-
-}
-
-void stroks::clear()
-{
-
-}
-*/
