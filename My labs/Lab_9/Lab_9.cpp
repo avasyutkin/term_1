@@ -2,6 +2,7 @@
 
 #include "pch.h" 
 #include <iostream> 
+#include <fstream> 
 
 class matrixdyn
 {
@@ -14,91 +15,156 @@ public:
 	virtual void create();
 	virtual void input();
 	void print();
-	void plus(matrixdyn matr2);
-	void mult(matrixdyn matr2);
 	void transp();
-	int getrows()
+	int getrows() const
 	{
 		return rows;
 	}
-	int getcolums()
+	int getcolums() const
 	{
 		return colums;
 	}
-	double getelem(int r, int c)
+	double getelem(int r, int c) const
 	{
 		return matr[r*colums + c];
 	}
+	void olelem(int oro, int oco, double oel)
+	{
+		matr[oro*colums + oco] = oel;
+	}
+	void odim(int oro, int oco)
+	{
+		rows = oro;
+		colums = oco;
+		matr = new double[rows*colums];
+	}
+	friend std::ostream& operator << (std::ostream& os, const matrixdyn& d);
 	void del();
+	friend matrixdyn operator + (matrixdyn A, matrixdyn B);
+	friend matrixdyn operator - (matrixdyn A, matrixdyn B);
+	friend matrixdyn operator * (matrixdyn A, matrixdyn B);
 };
 
 class vectordyn : public matrixdyn
 {
 public:
-	virtual void input();
-	virtual void create();
-	void xmult(double k);
-	double scalmultvector(vectordyn vec2);
+	void virtual input();
+	void virtual create();
+
+	friend std::ostream& operator << (std::ostream& os, const matrixdyn& d);
+	friend double operator * (vectordyn C, vectordyn D);
+	friend vectordyn operator * (vectordyn C, int k);
 };
 
 int main()
 {
 	setlocale(0, "");
 
-	matrixdyn matrA, matrB;
-	matrA.create();
-	matrA.input();
+	matrixdyn A, B;
+	A.create();
+	A.input();
 	std::cout << "Матрица A \n";
-	matrA.print();
+	A.print();
 
-	matrB.create();
-	matrB.input();
+	B.create();
+	B.input();
 	std::cout << "Матрица B \n";
-	matrB.print();
+	B.print();
 
-	matrA.transp();
+	A.transp();
 
-	matrA.plus(matrB);
-	std::cout << "A + B \n";
-	matrA.print();
+	std::cout << "A + B \n" << A + B << std::endl;
+	std::cout << "A - B \n" << A - B << std::endl;
+	std::cout << "A * B \n" << A * B << std::endl;
 
-	matrA.mult(matrB);
-	std::cout << "A * B \n";
-	matrA.print();
-
-	matrA.del();
-	matrB.del();
+	A.del();
+	B.del();
 
 
-	vectordyn matrA1, matrB1;
-	matrA1.create();
-	matrA1.input();
-	std::cout << "Вектор A \n";
-	matrA1.print();
+	vectordyn C, D;
+	C.create();
+	C.input();
+	std::cout << "Вектор C \n";
+	C.print();
 
-	matrB1.create();
-	matrB1.input();
-	std::cout << "Вектор B \n";
-	matrB1.print();
+	D.create();
+	D.input();
+	std::cout << "Вектор D \n";
+	D.print();
 
-	matrA1.xmult(10);
-	std::cout << "А * 10 \n";
-	matrA1.print();
+	std::cout << "C * 7 \n" << C * 7 << std::endl;
+	std::cout << "C + D \n" << C + D << std::endl;
+	std::cout << "C * D \n" << C * D << std::endl;
 
-	matrA1.plus(matrB1);
-	std::cout << "A * 10 + B \n";
-	matrA1.print();
-
-	double f = matrA1.scalmultvector(matrB1);
-	std::cout << "(A * 10 + B) * B \n" << f << std::endl;
-
-	matrA1.del();
-	matrB1.del();
+	C.del();
+	D.del();
 
 	getchar();
 	return 0;
 }
 
+matrixdyn operator + (matrixdyn A, matrixdyn B)
+{
+	matrixdyn res;
+	res.odim(A.getrows(), A.getcolums());
+	if (A.getrows() != B.getrows() || A.getcolums() != B.getcolums())
+	{
+		std::cout << "Error!\t";
+		return A;
+	}
+	for (int i = 0; i < B.getrows(); i++)
+		for (int j = 0; j < A.getcolums(); j++)
+			res.olelem(i, j, A.getelem(i, j) + B.getelem(i, j));
+	return res;
+}
+
+matrixdyn operator - (matrixdyn A, matrixdyn B)
+{
+	matrixdyn res;
+	res.odim(A.getrows(), A.getcolums());
+	if (A.getrows() != B.getrows() || A.getcolums() != B.getcolums())
+	{
+		std::cout << "Error!\t";
+		return A;
+	}
+	for (int i = 0; i < B.getrows(); i++)
+		for (int j = 0; j < A.getcolums(); j++)
+			res.olelem(i, j, A.getelem(i, j) - B.getelem(i, j));
+	return res;
+}
+
+matrixdyn operator * (matrixdyn A, matrixdyn B)
+{
+	matrixdyn res;
+	if (A.getcolums() != B.getrows())
+	{
+		std::cout << "Error!\t";
+		return A;
+	}
+	res.odim(A.getrows(), B.getcolums());
+	int rows = A.getrows();
+	int temp = A.getcolums();
+	int colums = B.getcolums();
+	for (int j = 0; j < colums; j++)
+		for (int i = 0; i < rows; i++)
+		{
+			double x = 0;
+			for (int t = 0; t < temp; t++)
+				x += A.getelem(i, t)*B.getelem(t, j);
+			res.olelem(i, j, x);
+		}
+	return res;
+}
+
+std::ostream & operator << (std::ostream & os, const matrixdyn & d)
+{
+	for (int i = 0; i < d.getrows(); i++) {
+		for (int j = 0; j < d.getcolums(); j++)
+			os << d.getelem(i, j) << "\t";
+		os << "\n";
+	}
+	return os;
+}
 
 void matrixdyn::create()
 {
@@ -120,7 +186,9 @@ void matrixdyn::input()
 		for (int j = 0; j < colums; j++)
 		{
 			std::cout << "Матрица[" << i + 1 << "][" << j + 1 << "]";
-			std::cin >> matr[i*colums + j];
+			std::cin >>
+
+				matr[i*colums + j];
 		}
 	std::cout << "\n";
 	boo = true;
@@ -142,49 +210,6 @@ void matrixdyn::print()
 			std::cout << std::endl;
 		}
 		std::cout << "\n";
-	}
-}
-
-void matrixdyn::plus(matrixdyn matr2)
-{
-	if (rows != matr2.getrows() || colums != matr2.getcolums())
-	{
-		boo = false;
-	}
-	else {
-		for (int i = 0; i < rows; i++)
-			for (int j = 0; j < colums; j++)
-				matr[i*colums + j] += matr2.getelem(i, j);
-	}
-}
-
-void matrixdyn::mult(matrixdyn matr2)
-{
-	if (colums != matr2.getrows())
-		boo = false;
-	else
-	{
-		double x = 0;
-		double *matr3 = new double[rows*matr2.getcolums()];
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < matr2.getcolums(); j++) {
-				for (int t = 0; t < colums; t++)
-					x += matr[i*colums + t] * matr2.getelem(t, j);
-				matr3[i * matr2.getcolums() + j] = x;
-				x = 0;
-			}
-		}
-		delete[] matr;
-		matr = new double[rows * matr2.getcolums()];
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < matr2.getcolums(); j++) {
-				matr[i * matr2.colums + j] = matr3[i * matr2.getcolums() + j];
-			}
-		}
-		colums = matr2.getcolums();
-		boo = true;
-		delete[] matr3;
-
 	}
 }
 
@@ -230,7 +255,6 @@ void matrixdyn::del()
 void vectordyn::input()
 {
 	for (int i = 0; i < rows; i++)
-
 		for (int j = 0; j < colums; j++)
 		{
 			std::cout << "Вектор[" << j + 1 << "] = ";
@@ -252,26 +276,28 @@ void vectordyn::create()
 	matr = new double[rows*colums];
 }
 
-void vectordyn::xmult(double k)
+vectordyn operator * (vectordyn C, int k)
 {
-	for (int i = 0; i < rows; i++)
-		for (int j = 0; j < colums; j++)
-			matr[i*colums + j] *= k;
+	vectordyn result;
+	int u = C.getrows();
+	int uu = C.getcolums();
+	result.odim(u, uu);
+	for (int i = 0; i < u; i++)
+		for (int j = 0; j < uu; j++)
+		{
+			double a = C.getelem(i, j);
+			result.olelem(i, j, k*a);
+		}
+	return result;
 }
 
-double vectordyn::scalmultvector(vectordyn vec2)
+double operator * (vectordyn C, vectordyn D)
 {
-	double product = 0;
-	if (colums != vec2.getcolums())
-	{
-		boo = false;
-		std::cout << "Мы вычисляем скалярное произведение только равных векторов.\n" << std::endl;
-	}
-	else
-	{
-		for (int i = 0; i < rows; i++)
-			for (int j = 0; j < colums; j++)
-				product = product + matr[i*colums + j] * vec2.getelem(i, j);
-		return product;
-	}
+	matrixdyn K = C;
+	matrixdyn M = D;
+	M.transp();
+	if (K.getcolums() != M.getrows())
+		std::cout << "Error!" << std::endl;
+	matrixdyn X = K * M;
+	return X.getelem(0, 0);
 }
