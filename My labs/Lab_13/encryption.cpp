@@ -6,6 +6,9 @@
 #include <openssl/aes.h>
 #include <fstream>
 
+
+
+
 #pragma comment (lib, "ws2_32.LIB")
 #pragma comment (lib, "gdi32.LIB")
 #pragma comment (lib, "advapi32.LIB")
@@ -136,6 +139,7 @@ int main()
 	deshef_input.open("‎⁨out.txt", std::fstream::in | std::fstream::binary);
 	std::fstream deshef_output;
 	deshef_output.open("‎⁨deasd_output.txt", std::fstream::out | std::fstream::in | std::fstream::trunc | std::fstream::binary);
+	std::ofstream fout("deasd_output.txt");
 	char str2[256];
 	deshef_input.read(str2, 256);
 	while (deshef_input.gcount() > 0)
@@ -145,7 +149,7 @@ int main()
 			&len,
 			(unsigned char *)str2,
 			deshef_input.gcount());  // СОБСТВЕННО, ШИФРОВАНИЕ
-
+		std::ofstream fout("deasd_output.txt");
 		cryptedtext_len = len;
 		deshef_output.write((char *)decryptedtext, len);
 		deshef_input.read(str2, 256);
