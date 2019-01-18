@@ -6,9 +6,6 @@
 #include <openssl/aes.h>
 #include <fstream>
 
-
-
-
 #pragma comment (lib, "ws2_32.LIB")
 #pragma comment (lib, "gdi32.LIB")
 #pragma comment (lib, "advapi32.LIB")
@@ -46,37 +43,30 @@ int main()
 	unsigned char cryptedtext[256]; // зашифрованный результат
 	unsigned char decryptedtext[256]; // расшифрованный результат
 
-	//  
+									  //открыть файл в бинарном виде 
 
+									  //f0.open("f0.txt", std::fstream::in | std::fstream::binary); // файл с исходными данными
 
-	//
-	//открыть файл в бинарном виде 
-	//
-	//
-	//
-	//f0.open("f0.txt", std::fstream::in | std::fstream::binary); // файл с исходными данными
-	//
-
-	// 1. Создаётся указатель на несуществующую структуру
-	// структура - тип данных в C++, близка к КЛАССУ, различия минимальны
+									  // 1. Создаётся указатель на несуществующую структуру
+									  // структура - тип данных в C++, близка к КЛАССУ, различия минимальны
 	EVP_CIPHER_CTX *ctx; // structure
 
-	// 2. Для указателя создаётся пустая структура настроек (метод, ключ, вектор инициализации и т.д.)
+						 // 2. Для указателя создаётся пустая структура настроек (метод, ключ, вектор инициализации и т.д.)
 	ctx = EVP_CIPHER_CTX_new(); // создание структуры с настройками метода
 
-	// 3. Структура EVP_CIPHER_CTX заполняется настройками
+								// 3. Структура EVP_CIPHER_CTX заполняется настройками
 	EVP_EncryptInit_ex(ctx, // ссылка на объект/структуру, куда заносятся параметры
 		EVP_aes_256_cbc(), // ссылка на шифрующее ядро AES 256 (функцию с алгоритмом)
 		NULL,
 		key, // ключ/пароль/секрет
 		iv); // рандомайзер (случайный начальный вектор)
 
-	// 4. САМ ПРОЦЕСС ШИФРОВАНИЯ - ФУКНЦИЯ EVP_EncryptUpdate
+			 // 4. САМ ПРОЦЕСС ШИФРОВАНИЯ - ФУКНЦИЯ EVP_EncryptUpdate
 
 	char str[256];
 	int len = 0;
 	int cryptedtext_len = len;
-	ifstream input("input.txt", std::fstream::binary);
+	ifstream input("input.txt", std::fstream::in, std::fstream::binary);
 	std::fstream output;
 	output.open("out.txt", std::fstream::out | std::fstream::in | std::fstream::trunc | std::fstream::binary);
 
@@ -84,10 +74,6 @@ int main()
 	while (input.gcount() > 0)
 
 	{
-
-
-
-
 		EVP_EncryptUpdate(ctx, // объект с настройками
 			cryptedtext, // входной параметр: ссылка, куда помещать зашифрованные данные
 			&len, // выходной параметр: длина полученного шифра
@@ -97,7 +83,6 @@ int main()
 		cryptedtext_len = len;
 		output.write((char *)cryptedtext, len);
 		input.read(str, 256);
-
 	}
 
 
@@ -125,21 +110,17 @@ int main()
 	//cout << endl;
 
 
-
-
-
 	// РАСШИФРОВКА
 
 	// 1.
 	ctx = EVP_CIPHER_CTX_new(); // создание структуры с настройками метода
 
-	// 2.
+								// 2.
 	EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv); // инициализация методом AES, ключом и вектором
 	std::fstream deshef_input;
-	deshef_input.open("‎⁨out.txt", std::fstream::in | std::fstream::binary);
+	deshef_input.open("out.txt", std::fstream::in | std::fstream::binary);
 	std::fstream deshef_output;
-	deshef_output.open("‎⁨deasd_output.txt", std::fstream::out | std::fstream::in | std::fstream::trunc | std::fstream::binary);
-	std::ofstream fout("deasd_output.txt");
+	deshef_output.open("deasd_output.txt", std::fstream::out | std::fstream::in | std::fstream::trunc | std::fstream::binary);
 	char str2[256];
 	deshef_input.read(str2, 256);
 	while (deshef_input.gcount() > 0)
@@ -149,7 +130,7 @@ int main()
 			&len,
 			(unsigned char *)str2,
 			deshef_input.gcount());  // СОБСТВЕННО, ШИФРОВАНИЕ
-		std::ofstream fout("deasd_output.txt");
+
 		cryptedtext_len = len;
 		deshef_output.write((char *)decryptedtext, len);
 		deshef_input.read(str2, 256);
@@ -166,17 +147,17 @@ int main()
 	// производится точно так же, но порциями, в цикле
 	// в цикле
 	/*
-		1) открытие файлов и настройка параметров OpenSSL
-		2) считывание первого блока
-		3) while(считанный_фрагмент > 0)
-		{
-			4) шифрование считанного
-			5) запись зашифрованного массива в файл
-			6) считывание следующего фрагмента
-		}
-		7) применение финализирующей фукнции
-		8) запись финализирующего блока в файл
-		9) закрытие файлов
+	1) открытие файлов и настройка параметров OpenSSL
+	2) считывание первого блока
+	3) while(считанный_фрагмент > 0)
+	{
+	4) шифрование считанного
+	5) запись зашифрованного массива в файл
+	6) считывание следующего фрагмента
+	}
+	7) применение финализирующей фукнции
+	8) запись финализирующего блока в файл
+	9) закрытие файлов
 	*/
 	getchar();
 	return 0;
