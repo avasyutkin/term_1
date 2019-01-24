@@ -71,7 +71,7 @@ int main()
 	output.open("out.txt", std::fstream::out | std::fstream::in | std::fstream::trunc | std::fstream::binary);
 
 	input.read(str, 256);
-	while (input.gcount() > 0)
+	while (input.gcount() > 0) 
 
 	{
 		EVP_EncryptUpdate(ctx, // объект с настройками
